@@ -1,0 +1,5 @@
+Flask==3.0.3
+mysqlclient==2.2.4
+flask-cors==4.0.1
+python-dotenv==1.0.1
+pandas==2.2.3
