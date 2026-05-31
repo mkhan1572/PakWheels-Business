@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+  <div>
+    <p class="text-uppercase text-muted mb-2">Vehicle detail</p>
+    <h1 class="page-title mb-3">Listing detail</h1>
+    <p class="text-secondary">Complete vehicle specifications sourced from the real dataset and image gallery.</p>
+  </div>
+  <a href="/listings" class="btn btn-outline-secondary btn-lg">Back to inventory</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="detail-image-card rounded-4 overflow-hidden shadow-sm mb-4 bg-white">
+      <img id="detailImage" class="w-100" src="" alt="Vehicle image" />
+    </div>
+    <div class="row g-3">
+      <div class="col-sm-6">
+        <div class="info-card p-4 rounded-4 shadow-sm bg-white">
+          <p class="info-title">Price</p>
+          <h3 id="detailPrice" class="info-value">—</h3>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="info-card p-4 rounded-4 shadow-sm bg-white">
+          <p class="info-title">Year</p>
+          <h3 id="detailYear" class="info-value">—</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="detail-meta-card p-4 rounded-4 shadow-sm bg-white">
+      <h2 id="detailTitle" class="mb-3">Loading vehicle details...</h2>
+      <p id="detailSummary" class="text-muted mb-4">Please wait while the detail record loads from the backend.</p>
+      <div class="row gx-3 gy-3 mb-4">
+        <div class="col-6">
+          <p class="meta-label">Brand</p>
+          <p id="detailMake" class="meta-value">—</p>
+        </div>
+        <div class="col-6">
+          <p class="meta-label">Model</p>
+          <p id="detailModel" class="meta-value">—</p>
+        </div>
+        <div class="col-6">
+          <p class="meta-label">Mileage</p>
+          <p id="detailMileage" class="meta-value">—</p>
+        </div>
+        <div class="col-6">
+          <p class="meta-label">Location</p>
+          <p id="detailCity" class="meta-value">—</p>
+        </div>
+        <div class="col-6">
+          <p class="meta-label">Fuel</p>
+          <p id="detailFuel" class="meta-value">—</p>
+        </div>
+        <div class="col-6">
+          <p class="meta-label">Transmission</p>
+          <p id="detailTransmission" class="meta-value">—</p>
+        </div>
+        <div class="col-6">
+          <p class="meta-label">Body type</p>
+          <p id="detailBodyType" class="meta-value">—</p>
+        </div>
+        <div class="col-6">
+          <p class="meta-label">Engine</p>
+          <p id="detailEngine" class="meta-value">—</p>
+        </div>
+      </div>
+      <div class="d-grid gap-2">
+        <a id="detailExternalLink" class="btn btn-primary" href="#" target="_blank">View listing on PakWheels</a>
+        <a href="/listings" class="btn btn-outline-secondary">Return to inventory</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

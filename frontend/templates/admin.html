@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section id="adminLoginPanel" class="admin-login-wrap mb-4">
+  <div class="admin-login-panel">
+    <div>
+      <p class="text-uppercase text-muted mb-2" style="font-size:0.78rem;font-weight:700;letter-spacing:.06em;">
+        <i class="fa-solid fa-lock me-1 text-warning"></i>Secure access
+      </p>
+      <h1 class="page-title mb-2">Admin Sign In</h1>
+      <p class="text-secondary mb-0">Use the seeded admin account to manage inventory, reports, permissions, and approvals.</p>
+    </div>
+    <form id="adminLoginForm" class="admin-login-form">
+      <div id="adminLoginAlert" class="alert alert-danger d-none py-2 mb-2" role="alert"></div>
+      <label class="form-label">Email</label>
+      <input type="email" id="adminEmail" class="form-control mb-3" value="admin@pakwheels-db.com" autocomplete="username" />
+      <label class="form-label">Password</label>
+      <input type="password" id="adminPassword" class="form-control mb-3" placeholder="Password123" autocomplete="current-password" />
+      <button type="submit" class="btn btn-primary w-100">
+        <i class="fa-solid fa-right-to-bracket me-1"></i>Sign in
+      </button>
+    </form>
+  </div>
+</section>
+
+<section id="adminWorkspace" class="d-none">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+    <div>
+      <p class="text-uppercase text-muted mb-2" style="font-size:0.78rem;font-weight:700;letter-spacing:.06em;">
+        <i class="fa-solid fa-shield-halved me-1 text-warning"></i>Administration
+      </p>
+      <h1 class="page-title mb-2">Admin Console</h1>
+      <p class="text-secondary">Manage vehicle listings, business reporting, and admin permissions directly from the dataset.</p>
+      <div class="d-flex gap-2 flex-wrap small text-muted">
+        <span><i class="fa-solid fa-user-shield me-1 text-primary"></i><span id="adminUserName">Admin</span></span>
+        <span><i class="fa-solid fa-envelope me-1 text-primary"></i><span id="adminUserEmail">admin@pakwheels-db.com</span></span>
+      </div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <button id="adminExport" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-file-export me-1"></i>Export CSV
+      </button>
+      <button id="adminRefresh" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-arrows-rotate me-1"></i>Refresh
+      </button>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#listingModal" id="openCreateModal">
+        <i class="fa-solid fa-plus me-1"></i>Add listing
+      </button>
+      <button id="adminLogout" class="btn btn-outline-danger">
+        <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>Logout
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4" id="adminStatsRow">
+    <div class="col-6 col-md-3">
+      <div class="stats-card shadow-sm">
+        <p class="stats-title">Total records</p>
+        <h2 id="adminStatTotal" class="stats-value">-</h2>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stats-card accent-green shadow-sm">
+        <p class="stats-title">Avg price</p>
+        <h2 id="adminStatAvgPrice" class="stats-value">-</h2>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stats-card accent-purple shadow-sm">
+        <p class="stats-title">Distinct models</p>
+        <h2 id="adminStatMakes" class="stats-value">-</h2>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stats-card accent-orange shadow-sm">
+        <p class="stats-title">Cities covered</p>
+        <h2 id="adminStatCities" class="stats-value">-</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-lg-4">
+      <div class="panel-card business-panel h-100">
+        <p class="panel-kicker">Admin account</p>
+        <h2 class="panel-title mb-3">Role and permissions</h2>
+        <div id="adminPermissionList" class="permission-list"></div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="panel-card business-panel h-100">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <p class="panel-kicker">Approval desk</p>
+            <h2 class="panel-title mb-1">Selected listings</h2>
+          </div>
+          <span id="adminSelectedCount" class="badge text-bg-primary">0 selected</span>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          <button id="adminMarkFeatured" class="btn btn-sm btn-outline-primary">
+            <i class="fa-solid fa-star me-1"></i>Mark featured
+          </button>
+          <button id="adminMarkReviewed" class="btn btn-sm btn-outline-success">
+            <i class="fa-solid fa-circle-check me-1"></i>Mark reviewed
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="panel-card business-panel h-100">
+        <p class="panel-kicker">Revenue view</p>
+        <h2 class="panel-title mb-3">Inventory value</h2>
+        <p id="adminMarketValue" class="business-value mb-1">N/A</p>
+        <p class="text-muted small mb-0">Estimated value from all active vehicle prices.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-card p-3 mb-4 d-flex flex-column flex-md-row gap-3 align-items-md-center">
+    <input type="search" id="adminSearch" class="form-control" placeholder="Search by title, make, model..." style="max-width:320px;" />
+    <select id="adminMakeFilter" class="form-select" style="max-width:200px;">
+      <option value="">All makes</option>
+    </select>
+    <select id="adminCityFilter" class="form-select" style="max-width:200px;">
+      <option value="">All cities</option>
+    </select>
+    <button id="adminApplyFilter" class="btn btn-primary ms-auto">
+      <i class="fa-solid fa-filter me-1"></i>Apply
+    </button>
+    <button id="adminClearFilter" class="btn btn-outline-secondary">Clear</button>
+  </div>
+
+  <div class="table-responsive rounded-3 shadow-sm bg-white mb-4">
+    <table class="table table-hover align-middle mb-0" id="adminTable">
+      <thead class="table-light">
+        <tr>
+          <th style="width:42px;"><input type="checkbox" class="form-check-input" id="adminSelectAll" /></th>
+          <th>ID</th>
+          <th>Vehicle</th>
+          <th>Year</th>
+          <th>Price (PKR)</th>
+          <th>City</th>
+          <th>Fuel / Trans.</th>
+          <th>Mileage</th>
+          <th>Status</th>
+          <th style="width:96px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="adminTableBody">
+        <tr><td colspan="10" class="text-center text-muted py-5">Loading records...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav aria-label="Admin pagination">
+    <ul class="pagination justify-content-center" id="adminPagination"></ul>
+  </nav>
+</section>
+
+<div class="modal fade" id="listingModal" tabindex="-1" aria-labelledby="listingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header pb-1">
+        <h5 class="modal-title fw-bold" id="listingModalLabel">Add new listing</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="modalAlertBox" class="alert alert-danger d-none mb-3" role="alert"></div>
+        <input type="hidden" id="modalListingId" />
+        <div class="row g-3">
+          <div class="col-md-12">
+            <label class="form-label">Title <span class="text-danger">*</span></label>
+            <input type="text" id="mTitle" class="form-control" placeholder="e.g. 2022 Toyota Corolla Altis" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Make <span class="text-danger">*</span></label>
+            <input type="text" id="mMake" class="form-control" placeholder="e.g. Toyota" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Model <span class="text-danger">*</span></label>
+            <input type="text" id="mModel" class="form-control" placeholder="e.g. Corolla" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Year <span class="text-danger">*</span></label>
+            <input type="number" id="mYear" class="form-control" placeholder="2022" min="1980" max="2026" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Price (PKR) <span class="text-danger">*</span></label>
+            <input type="number" id="mPrice" class="form-control" placeholder="3500000" min="1" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">City <span class="text-danger">*</span></label>
+            <input type="text" id="mCity" class="form-control" placeholder="e.g. Karachi" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Fuel type</label>
+            <select id="mFuel" class="form-select">
+              <option value="Petrol">Petrol</option>
+              <option value="Diesel">Diesel</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="Electric">Electric</option>
+              <option value="LPG">LPG</option>
+              <option value="CNG">CNG</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Transmission</label>
+            <select id="mTransmission" class="form-select">
+              <option value="Automatic">Automatic</option>
+              <option value="Manual">Manual</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Body type</label>
+            <select id="mBodyType" class="form-select">
+              <option value="Sedan">Sedan</option>
+              <option value="SUV">SUV</option>
+              <option value="Hatchback">Hatchback</option>
+              <option value="Pickup">Pickup</option>
+              <option value="Van">Van</option>
+              <option value="Wagon">Wagon</option>
+              <option value="Coupe">Coupe</option>
+              <option value="Crossover">Crossover</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Mileage (km)</label>
+            <input type="number" id="mMileage" class="form-control" placeholder="45000" min="0" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Engine (cc)</label>
+            <input type="number" id="mEngine" class="form-control" placeholder="1800" min="1" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Color</label>
+            <input type="text" id="mColor" class="form-control" placeholder="e.g. White" />
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Image URL</label>
+            <input type="url" id="mImageUrl" class="form-control" placeholder="https://..." />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer pt-1">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" id="modalSaveBtn" class="btn btn-primary">
+          <i class="fa-solid fa-floppy-disk me-1"></i>Save listing
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold text-danger" id="deleteModalLabel">
+          <i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm deletion
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-1">You are about to permanently delete listing:</p>
+        <p class="fw-semibold" id="deleteModalTitle">-</p>
+        <p class="text-muted small">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
+          <i class="fa-solid fa-trash me-1"></i>Delete permanently
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

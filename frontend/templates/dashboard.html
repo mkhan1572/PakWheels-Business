@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Page header -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+  <div>
+    <p class="text-uppercase text-muted mb-2" style="font-size:0.78rem;font-weight:700;letter-spacing:.06em;">Business dashboard</p>
+    <h1 class="page-title mb-2">PakWheels Inventory Intelligence</h1>
+    <p class="lead text-secondary">Track vehicle supply, performance, and market signals from the real PakWheels dataset.</p>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a href="/compare" class="btn btn-outline-secondary btn-lg"><i class="fa-solid fa-code-compare me-1"></i>Compare</a>
+    <a href="/listings" class="btn btn-primary btn-lg"><i class="fa-solid fa-cars me-1"></i>View Inventory</a>
+  </div>
+</div>
+
+<!-- KPI Row 1: Core metrics -->
+<section class="mb-4">
+  <div class="row g-3">
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="stats-card shadow-sm">
+        <p class="stats-title">Total listings</p>
+        <h2 id="statTotalListings" class="stats-value">—</h2>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="stats-card accent-green shadow-sm">
+        <p class="stats-title">Avg price</p>
+        <h2 id="statAvgPrice" class="stats-value">—</h2>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="stats-card accent-purple shadow-sm">
+        <p class="stats-title">Avg mileage</p>
+        <h2 id="statAvgMileage" class="stats-value">—</h2>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="stats-card accent-indigo shadow-sm">
+        <p class="stats-title">Distinct models</p>
+        <h2 id="statModelCount" class="stats-value">—</h2>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="stats-card accent-teal shadow-sm">
+        <p class="stats-title">Market value</p>
+        <h2 id="statMarketValue" class="stats-value">—</h2>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="stats-card accent-orange shadow-sm">
+        <p class="stats-title">Cities covered</p>
+        <h2 id="statCities" class="stats-value">—</h2>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Trend Insights Row -->
+<section class="mb-5">
+  <h3 class="section-title mb-3"><i class="fa-solid fa-bolt me-2 text-warning"></i>Market intelligence</h3>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="trend-card shadow-sm">
+        <div class="trend-icon blue"><i class="fa-solid fa-robot"></i></div>
+        <div>
+          <div class="trend-label">Auto vs. manual premium</div>
+          <div id="trendAutoPremium" class="trend-value">—</div>
+          <div class="trend-sub">Automatic transmission price delta</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="trend-card shadow-sm">
+        <div class="trend-icon green"><i class="fa-solid fa-trophy"></i></div>
+        <div>
+          <div class="trend-label">Dominant make</div>
+          <div id="trendDomMake" class="trend-value">—</div>
+          <div id="trendDomMakePct" class="trend-sub">Loading…</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="trend-card shadow-sm">
+        <div class="trend-icon amber"><i class="fa-solid fa-city"></i></div>
+        <div>
+          <div class="trend-label">Highest-value city</div>
+          <div id="trendHighCity" class="trend-value">—</div>
+          <div id="trendHighCityPrice" class="trend-sub">Loading…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Charts -->
+<section class="mb-5">
+  <div class="row gy-4">
+    <div class="col-lg-6">
+      <div class="panel-card shadow-sm p-4">
+        <div class="panel-header d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h3 class="panel-title mb-1">Top makes by volume</h3>
+            <p class="text-muted small mb-0">Highest listing counts from the dataset.</p>
+          </div>
+          <a href="/listings" class="btn btn-outline-primary btn-sm">View all</a>
+        </div>
+        <div style="height:220px;">
+          <canvas id="chartTopMakes"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="panel-card shadow-sm p-4">
+        <div class="panel-header d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h3 class="panel-title mb-1">City distribution</h3>
+            <p class="text-muted small mb-0">Listings by city for market visibility.</p>
+          </div>
+          <a href="/listings" class="btn btn-outline-primary btn-sm">Filter</a>
+        </div>
+        <div style="height:220px;">
+          <canvas id="chartTopCities"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured inventory -->
+<section class="featured-listings mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h3 class="section-title mb-1">Featured inventory</h3>
+      <p class="text-muted small mb-0">Latest listings with full image, pricing, and location.</p>
+    </div>
+    <a href="/listings" class="btn btn-outline-primary btn-sm">Browse all vehicles</a>
+  </div>
+  <div id="featuredListings" class="row g-4"></div>
+</section>
+
+<!-- CTA -->
+<section class="p-4 rounded-3 shadow-sm" style="background:linear-gradient(135deg,#eff6ff,#e0f2fe);">
+  <div class="row align-items-center gx-5">
+    <div class="col-lg-8">
+      <h4 class="mb-2 fw-bold">Real vehicle records. Real decisions.</h4>
+      <p class="text-muted mb-0">This business dashboard surfaces actionable data from the PakWheels dataset — market concentration, pricing signal, and inventory coverage — designed for executives and sales teams.</p>
+    </div>
+    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+      <a href="/admin" class="btn btn-primary btn-lg me-2"><i class="fa-solid fa-shield-halved me-1"></i>Admin Console</a>
+      <a href="/compare" class="btn btn-outline-primary btn-lg"><i class="fa-solid fa-code-compare me-1"></i>Compare</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

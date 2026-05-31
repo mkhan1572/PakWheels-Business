@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Page Header -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+  <div>
+    <p class="text-uppercase text-muted mb-2" style="font-size:0.78rem;font-weight:700;letter-spacing:.06em;">
+      <i class="fa-solid fa-code-compare me-1"></i>Vehicle Intelligence
+    </p>
+    <h1 class="page-title mb-2">Vehicle Comparison</h1>
+    <p class="text-secondary">Select two vehicles from the dataset and compare their full specification sheets side-by-side.</p>
+  </div>
+  <a href="/listings" class="btn btn-outline-secondary align-self-start">
+    <i class="fa-solid fa-arrow-left me-1"></i>Back to inventory
+  </a>
+</div>
+
+<!-- Vehicle Selectors -->
+<div class="row g-4 mb-5">
+  <div class="col-md-6">
+    <div class="compare-select-card">
+      <div class="mb-3">
+        <span class="badge bg-primary mb-2" style="border-radius:8px;font-size:0.75rem;">Vehicle A</span>
+        <h5 class="fw-bold mb-1">Select first vehicle</h5>
+        <p class="text-muted small mb-0">Choose a listing to compare</p>
+      </div>
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <select id="compareAMake" class="form-select form-select-sm">
+            <option value="">Make…</option>
+          </select>
+        </div>
+        <div class="col-6">
+          <select id="compareAModel" class="form-select form-select-sm">
+            <option value="">Model…</option>
+          </select>
+        </div>
+      </div>
+      <select id="compareAListing" class="form-select mb-3">
+        <option value="">Select a listing…</option>
+      </select>
+      <div id="compareAPreview" class="d-none">
+        <img id="compareAImg" src="" alt="Vehicle A" class="img-fluid rounded-3 mb-2" style="max-height:140px;object-fit:cover;width:100%;" />
+        <p id="compareATitle" class="fw-bold mb-0 text-center"></p>
+        <p id="compareAPrice" class="text-primary fw-semibold text-center small mb-0"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="compare-select-card">
+      <div class="mb-3">
+        <span class="badge bg-success mb-2" style="border-radius:8px;font-size:0.75rem;">Vehicle B</span>
+        <h5 class="fw-bold mb-1">Select second vehicle</h5>
+        <p class="text-muted small mb-0">Choose a listing to compare</p>
+      </div>
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <select id="compareBMake" class="form-select form-select-sm">
+            <option value="">Make…</option>
+          </select>
+        </div>
+        <div class="col-6">
+          <select id="compareBModel" class="form-select form-select-sm">
+            <option value="">Model…</option>
+          </select>
+        </div>
+      </div>
+      <select id="compareBListing" class="form-select mb-3">
+        <option value="">Select a listing…</option>
+      </select>
+      <div id="compareBPreview" class="d-none">
+        <img id="compareBImg" src="" alt="Vehicle B" class="img-fluid rounded-3 mb-2" style="max-height:140px;object-fit:cover;width:100%;" />
+        <p id="compareBTitle" class="fw-bold mb-0 text-center"></p>
+        <p id="compareBPrice" class="text-success fw-semibold text-center small mb-0"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Compare Button -->
+<div class="text-center mb-5">
+  <button id="compareBtn" class="btn btn-primary btn-lg px-5" disabled>
+    <i class="fa-solid fa-code-compare me-2"></i>Compare vehicles
+  </button>
+  <p class="text-muted small mt-2" id="compareHint">Select both vehicles above to enable comparison.</p>
+</div>
+
+<!-- Comparison Result Table (hidden until both selected) -->
+<div id="compareResult" class="d-none">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="section-title mb-0">Specification comparison</h3>
+    <button id="clearCompare" class="btn btn-outline-secondary btn-sm">
+      <i class="fa-solid fa-xmark me-1"></i>Clear
+    </button>
+  </div>
+
+  <div class="table-responsive rounded-3 shadow-sm bg-white">
+    <table class="table table-hover spec-table align-middle mb-0">
+      <thead>
+        <tr>
+          <th class="ps-4" style="width:25%;">Specification</th>
+          <th id="compareHeaderA" style="width:37.5%;"></th>
+          <th id="compareHeaderB" style="width:37.5%;"></th>
+        </tr>
+      </thead>
+      <tbody id="compareSpecBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Price delta summary -->
+  <div class="row g-3 mt-3" id="compareSummaryRow">
+    <div class="col-md-4">
+      <div class="trend-card">
+        <div class="trend-icon blue"><i class="fa-solid fa-tag"></i></div>
+        <div>
+          <div class="trend-label">Price difference</div>
+          <div id="priceDiff" class="trend-value">—</div>
+          <div id="priceDiffPct" class="trend-sub"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="trend-card">
+        <div class="trend-icon green"><i class="fa-solid fa-road"></i></div>
+        <div>
+          <div class="trend-label">Mileage difference</div>
+          <div id="mileageDiff" class="trend-value">—</div>
+          <div id="mileageSub" class="trend-sub"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="trend-card">
+        <div class="trend-icon amber"><i class="fa-solid fa-gauge-high"></i></div>
+        <div>
+          <div class="trend-label">Engine difference</div>
+          <div id="engineDiff" class="trend-value">—</div>
+          <div id="engineSub" class="trend-sub"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

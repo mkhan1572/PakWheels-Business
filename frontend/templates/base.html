@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>{{ title or 'PakWheels Business Portal' }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  </head>
+  <body data-page="{{ page }}">
+    <header class="site-header shadow-sm">
+      <nav class="navbar navbar-expand-lg navbar-dark py-3">
+        <div class="container">
+          <a class="navbar-brand d-flex align-items-center" href="/">
+            <span class="brand-mark">PW</span>
+            <span class="brand-name ms-2">PakWheels Business</span>
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#siteNav" aria-controls="siteNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="siteNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+              <li class="nav-item"><a class="nav-link nav-pill {% if page == 'dashboard' %}active{% endif %}" href="/"><i class="fa-solid fa-chart-line me-1"></i>Dashboard</a></li>
+              <li class="nav-item"><a class="nav-link nav-pill {% if page == 'listings' %}active{% endif %}" href="/listings"><i class="fa-solid fa-cars me-1"></i>Inventory</a></li>
+              <li class="nav-item"><a class="nav-link nav-pill {% if page == 'compare' %}active{% endif %}" href="/compare"><i class="fa-solid fa-code-compare me-1"></i>Compare</a></li>
+              <li class="nav-item ms-lg-2">
+                <a class="nav-link nav-pill nav-admin {% if page == 'admin' %}active{% endif %}" href="/admin">
+                  <i class="fa-solid fa-shield-halved me-1"></i>Admin
+                  <span class="admin-badge">PRO</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="page-body">
+      <div class="container py-5">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+
+    <footer class="site-footer py-4 bg-light">
+      <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <div>
+          <p class="mb-0 text-muted">PakWheels Business Edition &#8211; Data-driven vehicle insights and inventory management.</p>
+        </div>
+        <div class="text-muted">Powered by real PakWheels dataset and MySQL analytics.</div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+  </body>
+</html>
